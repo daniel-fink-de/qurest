@@ -1,0 +1,894 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "QuRest",
+    "description": "A REST-full Approach for Hybrid Quantum-Classical Circuit Modeling",
+    "termsOfService": "https://github.com/StuttgarterDotNet/qurest",
+    "contact": {
+      "name": "Daniel Fink",
+      "url": "https://github.com/StuttgarterDotNet"
+    },
+    "license": {
+      "name": "Use under Apache 2.0",
+      "url": "https://opensource.org/licenses/Apache-2.0"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/compilations": {
+      "get": {
+        "tags": [
+          "Compilations"
+        ],
+        "summary": "List all available compilations.",
+        "description": "Sample request:\r\n            \r\n    GET /compilations\r\n    {\r\n            \r\n    }",
+        "responses": {
+          "200": {
+            "description": "Returns the list of all compilations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QuantumCircuit"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compilations/{name}": {
+      "get": {
+        "tags": [
+          "Compilations"
+        ],
+        "summary": "Get the compilation with the given name.",
+        "description": "Sample request:\r\n            \r\n    GET /compilations/CoinFlip\r\n    {\r\n            \r\n    }",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the compilation with the given name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantumCircuit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "A compilation with the given name could not be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Compilations"
+        ],
+        "summary": "Compiles the quantum circuit with the given name and placeholder and parameter mapping.",
+        "description": "Sample request:\r\n            \r\n    PUT /compilations/CoinFlip\r\n    {\r\n            \r\n    }",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "parameterMapping",
+            "in": "query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          },
+          {
+            "name": "placeholderMapping",
+            "in": "query",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The quantum circuit has been compiled successfully"
+          },
+          "404": {
+            "description": "A compilation with the given name could not be found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "An error occurred during compilation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Compilations"
+        ],
+        "summary": "Delete the compilation with the given name.",
+        "description": "Sample request:\r\n            \r\n    DELETE /compilations/CoinFlip\r\n    {\r\n            \r\n    }",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The compilation has been deleted successfully"
+          },
+          "404": {
+            "description": "A compilation with the given name could not be found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compilations/{name}/qasm": {
+      "get": {
+        "tags": [
+          "Compilations"
+        ],
+        "summary": "Export the compilation with the given name to qasm.",
+        "description": "Sample request:\r\n            \r\n    GET /compilations/CoinFlip/qasm\r\n    {\r\n            \r\n    }",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The qasm string of the compilation"
+          },
+          "404": {
+            "description": "A compilation with the given name could not be found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "An error occurred during exporting to qasm"
+          }
+        }
+      }
+    },
+    "/api/quantum-circuits": {
+      "get": {
+        "tags": [
+          "QuantumCircuits"
+        ],
+        "summary": "List all available quantum circuits.",
+        "description": "Sample request:\r\n            \r\n    GET /quantum-circuits\r\n    {\r\n            \r\n    }",
+        "responses": {
+          "200": {
+            "description": "Returns the list of all quantum circuits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QuantumCircuit"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "QuantumCircuits"
+        ],
+        "summary": "Create a new quantum circuit.",
+        "description": "Sample request:\r\n            \r\n    POST /quantum-circuits\r\n    {\r\n        \"name\": \"MyCircuit\",\r\n        \"description\": \"Perform a coin flip simulation.\",\r\n        \"size\": \"1\",\r\n        \"steps\": [\r\n            {\r\n                \"index\": 0,\r\n                \"type\": \"Unitarian\"\r\n            },\r\n            {\r\n                \"index\": 1,\r\n                \"type\": \"Hermitian\"\r\n            }\r\n        ],\r\n        \"unitarians\": [\r\n            {\r\n                \"qubits\": \"0\",\r\n                \"type\": \"H\",\r\n                \"index\": 0\r\n                }\r\n        ],\r\n        \"hermitians\": [\r\n            {\r\n                \"qubits\": \"0\",\r\n                \"type\": \"X\",\r\n                \"index\": 1\r\n            }\r\n        ],\r\n    }",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuantumCircuit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "409": {
+            "description": "A quantum circuit with the given name exists already",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "The quantum circuit was created successfully"
+          }
+        }
+      }
+    },
+    "/api/quantum-circuits/overview": {
+      "get": {
+        "tags": [
+          "QuantumCircuits"
+        ],
+        "summary": "List the names and descriptions of all available quantum circuits.",
+        "description": "Sample request:\r\n            \r\n    GET /quantum-circuits/overview\r\n    {\r\n            \r\n    }",
+        "responses": {
+          "200": {
+            "description": "Returns the list of the names and descriptions of all quantum circuits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantum-circuits/{name}": {
+      "get": {
+        "tags": [
+          "QuantumCircuits"
+        ],
+        "summary": "Get the quantum circuit with the given name.",
+        "description": "Sample request:\r\n            \r\n    GET /quantum-circuits/CoinFlip\r\n    {\r\n            \r\n    }",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The quantum circuit with the given name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantumCircuit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "A quantum circuit with the given name cannot be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "QuantumCircuits"
+        ],
+        "summary": "Update the quantum circuit with the given name.",
+        "description": "Sample request:\r\n            \r\n    PUT /quantum-circuits/CoinFlip\r\n    {\r\n        \"name\": \"CoinFlip\",\r\n        \"description\": \"Perform a coin flip simulation.\",\r\n        \"size\": \"1\",\r\n        \"steps\": [\r\n            {\r\n                \"index\": 0,\r\n                \"type\": \"Unitarian\"\r\n            },\r\n            {\r\n                \"index\": 1,\r\n                \"type\": \"Hermitian\"\r\n            }\r\n        ],\r\n        \"unitarians\": [\r\n            {\r\n                \"qubits\": \"0\",\r\n                \"type\": \"H\",\r\n                \"index\": 0\r\n                }\r\n        ],\r\n        \"hermitians\": [\r\n            {\r\n                \"qubits\": \"0\",\r\n                \"type\": \"X\",\r\n                \"index\": 1\r\n            }\r\n        ],\r\n    }",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuantumCircuit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The quantum circuit with the given name has been created"
+          },
+          "204": {
+            "description": "The quantum circuit with the given name has been updated"
+          },
+          "404": {
+            "description": "A quantum circuit with the given name cannot be found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "QuantumCircuits"
+        ],
+        "summary": "Delete the quantum circuit with the given name.",
+        "description": "Sample request:\r\n            \r\n    DELETE /quantum-circuits/CoinFlip\r\n    {\r\n            \r\n    }",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The quantum circuit with the given name has been deleted"
+          },
+          "404": {
+            "description": "A quantum circuit with the given name cannot be found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantum-circuits/{name}/qxml": {
+      "get": {
+        "tags": [
+          "QuantumCircuits"
+        ],
+        "summary": "Get the quantum circuit with the given name as qxml.",
+        "description": "Sample request:\r\n            \r\n    GET /quantum-circuits/CoinFlip/qxml\r\n    {\r\n            \r\n    }",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The <a href=\"https://github.com/StuttgarterDotNet/qurest/blob/main/src/Domain/qxml.xsd\">qxml</a> of the quantum circuit with the given name"
+          },
+          "404": {
+            "description": "A quantum circuit with the given name cannot be found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantum-circuits/qxml": {
+      "post": {
+        "tags": [
+          "QuantumCircuits"
+        ],
+        "summary": "Create a quantum circuit with the given qxml.",
+        "description": "Sample request:\r\n            \r\n    POST /quantum-circuits/MyCircuit/qxml\r\n            \r\n    <?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n    <quantumCircuit xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" name=\"MyCircuit\" size=\"1\">\r\n    <steps xmlns=\"qxml\">\r\n    <step index=\"0\" type=\"Unitarian\" />\r\n    <step index=\"1\" type=\"Hermitian\" />\r\n    </steps>\r\n    <unitarians xmlns=\"qxml\">\r\n    <unitarian qubits=\"0\" type=\"H\" index=\"0\" />\r\n    </unitarians>\r\n    <hermitians xmlns=\"qxml\">\r\n    <hermitian qubits=\"0\" type=\"X\" index=\"1\" />\r\n    </hermitians>\r\n    <description xmlns=\"qxml\">A single coin flip simulation.</description>\r\n    </quantumCircuit>",
+        "requestBody": {
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "The quantum circuit given the qxml has been created successfully"
+          },
+          "409": {
+            "description": "A quantum circuit with the given name exists already",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The given qxml could not be serialized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Condition": {
+        "required": [
+          "expression",
+          "index",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ConditionControlType"
+          },
+          "expression": {
+            "type": "string"
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConditionControlType": {
+        "enum": [
+          "If",
+          "ElseIf",
+          "Else",
+          "EndIf"
+        ],
+        "type": "string"
+      },
+      "Hermitian": {
+        "required": [
+          "index",
+          "qubits",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "qubits": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/HermitianType"
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HermitianType": {
+        "enum": [
+          "X",
+          "SET0",
+          "SET1"
+        ],
+        "type": "string"
+      },
+      "Loop": {
+        "required": [
+          "index",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/LoopControlType"
+          },
+          "variable": {
+            "type": "string",
+            "nullable": true
+          },
+          "start": {
+            "type": "string",
+            "nullable": true
+          },
+          "end": {
+            "type": "string",
+            "nullable": true
+          },
+          "increment": {
+            "type": "string",
+            "nullable": true
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoopControlType": {
+        "enum": [
+          "ForLoopStart",
+          "ForLoopEnd"
+        ],
+        "type": "string"
+      },
+      "Placeholder": {
+        "required": [
+          "index",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "QuantumCircuit": {
+        "required": [
+          "name",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "parameterList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Step"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "stepsSpecified": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "unitarians": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitarian"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "unitariansSpecified": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hermitians": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Hermitian"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "hermitiansSpecified": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "placeholders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Placeholder"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "placeholdersSpecified": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "loops": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Loop"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "loopsSpecified": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Condition"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "conditionsSpecified": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "size": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Step": {
+        "required": [
+          "index",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/StepType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StepType": {
+        "enum": [
+          "Unitarian",
+          "Hermitian",
+          "Placeholder",
+          "Loop",
+          "Condition"
+        ],
+        "type": "string"
+      },
+      "Unitarian": {
+        "required": [
+          "index",
+          "qubits",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "qubits": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/UnitarianType"
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UnitarianType": {
+        "enum": [
+          "H",
+          "X",
+          "Z",
+          "CX",
+          "CZ",
+          "RX",
+          "SWAP"
+        ],
+        "type": "string"
+      }
+    }
+  }
+}
