@@ -5,7 +5,7 @@
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/stuttgarterdotnet/qurest)
 
 QuRest is an academical prototype with the intention to show how **classical control structures** like loops and conditionals can be implemented in a **gate-based quantum circuit model**. 
-We achieve this by introducing so-called **model variables**, i.e. variables that needs to be mapped to real values at compile-time but can be used freely when modelling a quantum circuit.
+This can be achieved by introducing so-called **model variables**, i.e. variables that needs to be mapped to real values at compile-time but can be used freely when modelling a quantum circuit.
 
 
 The following example shows the preparation of a *GHZ-State* with *n* qubits using a for loop:
@@ -16,16 +16,28 @@ var qc = new QuantumCircuit()
     .WithDescription("Prepares a N qubit GHZ state.")
     .WithSize("N")
     .H("0")
-    .For("i", "0", "N-1", "1") // for (var i = 0; i < N-1; i++)
+    .For("i", "0", "N-1", "1")
         .CX("i", "i+1")
     .EndFor();
 ```
 
 The output of the compilation with *N=4*:
 
-<div style="text-align:center">
-<img src="https://github.com/StuttgarterDotNet/qurest/blob/main/images/4-Qubit-GHZ.svg">
+
+<div style="text-align: center">
+<img src="https://raw.githubusercontent.com/StuttgarterDotNet/qurest/563592eb1099dba354118040003ed2db8819874b/images/4-Qubit-GHZ.svg" align="center">
 </div>
+
+## Getting Started
+The easiest way of using the prototype is via the [official docker image](https://hub.docker.com/r/stuttgarterdotnet/qurest).
+If docker is installed, executing
+
+```ps
+docker run -d -p 88:80 stuttgarterdotnet/qurest
+```
+will run a container with the QuRest image listening on port 88.
+The swagger ui can than be accessed via [http://localhost:88/swagger](http://localhost:88/swagger).
+
 
 ## Disclaimer of Warranty
 Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
