@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>QuRest.Domain</RootNamespace>
+    <AssemblyName>QuRest.Domain</AssemblyName>
     <GenerateCode>True</GenerateCode>
   </PropertyGroup>
 
   <Target Name="GenerateModelFromXsd" BeforeTargets="PrepareForBuild" Condition="'$(GenerateCode)'=='True' ">
-    <Exec Command="dotnet xscgen -v --nullable --dc --nu -n qxml=QuRest.$(ProjectName) $(ProjectDir)qxml.xsd" />
-    <Copy SourceFiles="QuRest.$(ProjectName).cs" DestinationFiles="qxml.cs" />
-    <Delete Files="QuRest.$(ProjectName).cs" />
+    <Exec Command="dotnet xscgen -v --nullable --dc --nu -n qxml=QuRest.$(ProjectName) $(ProjectDir)qxml.xsd"/>
+    <Copy SourceFiles="QuRest.$(ProjectName).cs" DestinationFiles="qxml.cs"/>
+    <Delete Files="QuRest.$(ProjectName).cs"/>
   </Target>
 
   <ItemGroup>

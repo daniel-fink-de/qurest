@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -187,11 +188,11 @@ namespace QuRest.WebUI.Controllers
         /// <response code="404">A quantum circuit with the given name cannot be found</response>
         [HttpGet]
         [Route("quantum-circuits/{name}/qxml")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [Produces(MediaTypeNames.Text.Plain)]
-        public async Task<ActionResult<string>> GetQuantumCircuitQxmlAsync(
+        public async Task<IActionResult> GetQuantumCircuitQxmlAsync(
             [Required, FromRoute] string name)
         {
             try
@@ -202,7 +203,12 @@ namespace QuRest.WebUI.Controllers
                 await using var stringWriter = new StringWriter();
                 serializer.Serialize(stringWriter, circuit);
 
-                return stringWriter.ToString();
+                return new ContentResult
+                {
+                    Content = serializer.ToString(),
+                    ContentType = "text/plain",
+                    StatusCode = (int)HttpStatusCode.OK
+                };
             }
             catch
             {

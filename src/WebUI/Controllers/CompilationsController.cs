@@ -163,10 +163,10 @@ namespace QuRest.WebUI.Controllers
         /// <response code="400">An error occurred during exporting to qasm</response>
         [HttpGet]
         [Route("compilations/{name}/qasm")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Produces(MediaTypeNames.Text.Plain)]
-        public async Task<ActionResult<QuantumCircuit>> GetQasmAsync(
+        public async Task<IActionResult> GetQasmAsync(
             [FromServices] IQxmlTranslator translator,
             [Required, FromRoute] string name)
         {
@@ -250,7 +250,7 @@ namespace QuRest.WebUI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Produces(MediaTypeNames.Text.Html)]
-        public async Task<ActionResult<string>> GetSvgAsync(
+        public async Task<IActionResult> GetSvgAsync(
             [FromServices] IQxmlDrawer drawer,
             [Required, FromRoute] string name)
         {
@@ -301,7 +301,7 @@ namespace QuRest.WebUI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Produces("image/png")]
-        public async Task<ActionResult<string>> GetPngAsync(
+        public async Task<IActionResult> GetPngAsync(
             [FromServices] IQxmlDrawer drawer,
             [Required, FromRoute] string name)
         {
