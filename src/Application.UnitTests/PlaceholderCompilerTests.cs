@@ -15,14 +15,14 @@ namespace QuRest.Application.UnitTests
                 .WithSize("1")
                 .H("0");
 
-            var algorithm = new QuantumCircuit()
-                .WithName("SimpleAlgorithm")
+            var circuit = new QuantumCircuit()
+                .WithName("SimpleCircuit")
                 .WithSize("1")
                 .Placeholder("placeholder");
 
             var compilation = await this.Compiler
                 .AddPlaceholderMapping("placeholder", placeholder)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Size.Should().Be("1");
             compilation.Steps.Should().HaveCount(1);
@@ -41,8 +41,8 @@ namespace QuRest.Application.UnitTests
                 .WithParameter("{p}")
                 .H("{p}");
 
-            var algorithm = new QuantumCircuit()
-                .WithName("SimpleAlgorithm")
+            var circuit = new QuantumCircuit()
+                .WithName("SimpleCircuit")
                 .WithSize("1")
                 .WithParameter("{p}")
                 .Placeholder("placeholder");
@@ -50,7 +50,7 @@ namespace QuRest.Application.UnitTests
             var compilation = await this.Compiler
                 .AddPlaceholderMapping("placeholder", placeholder)
                 .AddParameterMapping("{p}", 0)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Size.Should().Be("1");
             compilation.Steps.Should().HaveCount(1);
@@ -68,8 +68,8 @@ namespace QuRest.Application.UnitTests
                 .WithSize("1")
                 .H("0");
 
-            var algorithm = new QuantumCircuit()
-                .WithName("SimpleAlgorithm")
+            var circuit = new QuantumCircuit()
+                .WithName("SimpleCircuit")
                 .WithSize("1")
                 .For("{i}", "0", "4", "1")
                 .Placeholder("placeholder")
@@ -77,7 +77,7 @@ namespace QuRest.Application.UnitTests
 
             var compilation = await this.Compiler
                 .AddPlaceholderMapping("placeholder", placeholder)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Size.Should().Be("1");
             compilation.Steps.Should().HaveCount(4);
@@ -103,14 +103,14 @@ namespace QuRest.Application.UnitTests
                     .H("0")
                 .EndFor();
 
-            var algorithm = new QuantumCircuit()
-                .WithName("SimpleAlgorithm")
+            var circuit = new QuantumCircuit()
+                .WithName("SimpleCircuit")
                 .WithSize("1")
                 .Placeholder("placeholder");
 
             var compilation = await this.Compiler
                 .AddPlaceholderMapping("placeholder", placeholder)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Size.Should().Be("1");
             compilation.Steps.Should().HaveCount(4);
@@ -140,15 +140,15 @@ namespace QuRest.Application.UnitTests
                     .X("0")
                 .EndIf();
 
-                var algorithm = new QuantumCircuit()
-                .WithName("SimpleAlgorithm")
-                .WithSize("{N}")
-                .Placeholder("placeholder");
+            var circuit = new QuantumCircuit()
+            .WithName("SimpleCircuit")
+            .WithSize("{N}")
+            .Placeholder("placeholder");
 
             var compilation = await this.Compiler
                 .AddPlaceholderMapping("placeholder", placeholder)
                 .AddParameterMapping("{N}", 1)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Size.Should().Be("1");
             compilation.Steps.Should().HaveCount(1);
@@ -160,7 +160,7 @@ namespace QuRest.Application.UnitTests
             var compilation2 = await this.Compiler
                 .AddPlaceholderMapping("placeholder", placeholder)
                 .AddParameterMapping("{N}", 2)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation2.Size.Should().Be("2");
             compilation2.Steps.Should().HaveCount(1);
@@ -172,7 +172,7 @@ namespace QuRest.Application.UnitTests
             var compilation3 = await this.Compiler
                 .AddPlaceholderMapping("placeholder", placeholder)
                 .AddParameterMapping("{N}", 3)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation3.Size.Should().Be("3");
             compilation3.Steps.Should().HaveCount(1);
@@ -200,13 +200,13 @@ namespace QuRest.Application.UnitTests
                 .WithSize("1")
                 .Z("0");
 
-            var algorithm = new QuantumCircuit()
-            .WithName("SimpleAlgorithm")
+            var circuit = new QuantumCircuit()
+            .WithName("SimpleCircuit")
             .WithSize("{N}")
             .If("{N} = 1")
-            .Placeholder("placeholder1")
+                .Placeholder("placeholder1")
             .ElseIf("{N} = 2")
-            .Placeholder("placeholder2")
+                .Placeholder("placeholder2")
             .Else()
             .Placeholder("placeholder3")
             .EndIf();
@@ -216,7 +216,7 @@ namespace QuRest.Application.UnitTests
                 .AddPlaceholderMapping("placeholder2", placeholder2)
                 .AddPlaceholderMapping("placeholder3", placeholder3)
                 .AddParameterMapping("{N}", 1)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Size.Should().Be("1");
             compilation.Steps.Should().HaveCount(1);
@@ -230,7 +230,7 @@ namespace QuRest.Application.UnitTests
                 .AddPlaceholderMapping("placeholder2", placeholder2)
                 .AddPlaceholderMapping("placeholder3", placeholder3)
                 .AddParameterMapping("{N}", 2)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation2.Size.Should().Be("2");
             compilation2.Steps.Should().HaveCount(1);
@@ -244,7 +244,7 @@ namespace QuRest.Application.UnitTests
                 .AddPlaceholderMapping("placeholder2", placeholder2)
                 .AddPlaceholderMapping("placeholder3", placeholder3)
                 .AddParameterMapping("{N}", 3)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation3.Size.Should().Be("3");
             compilation3.Steps.Should().HaveCount(1);

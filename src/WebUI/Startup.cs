@@ -66,9 +66,9 @@ namespace QuRest.WebUI
             var db = app.ApplicationServices.GetService<IApplicationDbContext>();
             if (db == null) return;
 
-            foreach (var algorithm in AlgorithmExamples.All)
+            foreach (var circuit in QuantumCircuitExamples.All)
             {
-                db.Algorithms.CreateAsync(algorithm);
+                db.Algorithms.CreateAsync(circuit);
             }
         }
     }

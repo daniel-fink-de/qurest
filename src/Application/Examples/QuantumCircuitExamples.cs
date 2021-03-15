@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace QuRest.Application.Examples
 {
-    public static class AlgorithmExamples
+    public static class QuantumCircuitExamples
     {
         public static IEnumerable<QuantumCircuit> All =>
             new List<QuantumCircuit>

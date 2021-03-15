@@ -9,27 +9,27 @@ using System.Threading.Tasks;
 namespace QuRest.WebUI.Controllers
 {
     [ApiController, Route("api/")]
-    public class AlgorithmsController : ControllerBase
+    public class QuantumCircuitsController : ControllerBase
     {
         private readonly IApplicationDbContext database;
 
-        public AlgorithmsController(
+        public QuantumCircuitsController(
             IApplicationDbContext database)
         {
             this.database = database;
         }
 
-        [HttpGet, Route("algorithms")]
-        public async Task<ActionResult<IEnumerable<QuantumCircuit>>> GetAllAlgorithmsAsync()
+        [HttpGet, Route("quantum-circuits")]
+        public async Task<ActionResult<IEnumerable<QuantumCircuit>>> GetAllQuantumCircuitsAsync()
         {
-            var algorithms = await this.database.Algorithms.ReadAllAsync();
-            var realAlgorithms = algorithms.Where(a => !a.Name.EndsWith("_compilation"));
+            var circuits = await this.database.Algorithms.ReadAllAsync();
+            var realCircuits = circuits.Where(a => !a.Name.EndsWith("_compilation"));
 
-            return new JsonResult(realAlgorithms);
+            return new JsonResult(realCircuits);
         }
 
-        [HttpGet, Route("algorithms/overview")]
-        public async Task<ActionResult<IEnumerable<string>>> GetAlgorithmsOverviewAsync()
+        [HttpGet, Route("quantum-circuits/overview")]
+        public async Task<ActionResult<IEnumerable<string>>> GetQuantumCircuitsOverviewAsync()
         {
             var overviewStrings = (await this.database.Algorithms.ReadAllAsync())
                 .Where(a => !a.Name.EndsWith("_compilation"))
@@ -38,8 +38,8 @@ namespace QuRest.WebUI.Controllers
             return new JsonResult(overviewStrings);
         }
 
-        [HttpPost, Route("algorithms")]
-        public async Task<ActionResult> CreateAlgorithm(
+        [HttpPost, Route("quantum-circuits")]
+        public async Task<ActionResult> CreateQuantumCircuitAsync(
             [Required, FromBody] QuantumCircuit algorithm)
         {
             await this.database.Algorithms.CreateAsync(algorithm);
@@ -47,17 +47,17 @@ namespace QuRest.WebUI.Controllers
             return this.Ok();
         }
 
-        [HttpGet, Route("algorithms/{name}")]
-        public async Task<ActionResult<QuantumCircuit>> GetAlgorithmAsync(
+        [HttpGet, Route("quantum-circuits/{name}")]
+        public async Task<ActionResult<QuantumCircuit>> GetQuantumCircuitAsync(
             [Required, FromRoute] string name)
         {
-            var algorithm = await this.database.Algorithms.ReadAsync(name);
+            var circuit = await this.database.Algorithms.ReadAsync(name);
 
-            return new JsonResult(algorithm);
+            return new JsonResult(circuit);
         }
 
-        [HttpPut, Route("algorithms/{name}")]
-        public async Task<ActionResult> UpdateAlgorithmAsync(
+        [HttpPut, Route("quantum-circuits/{name}")]
+        public async Task<ActionResult> UpdateQuantumCircuitAsync(
             [Required, FromRoute] string name,
             [Required, FromBody] QuantumCircuit algorithm)
         {
@@ -66,8 +66,8 @@ namespace QuRest.WebUI.Controllers
             return this.Ok();
         }
 
-        [HttpDelete, Route("algorithms/{name}")]
-        public async Task<ActionResult> DeleteAlgorithmAsync(
+        [HttpDelete, Route("quantum-circuits/{name}")]
+        public async Task<ActionResult> DeleteQuantumCircuitAsync(
             [Required, FromRoute] string name)
         {
             await this.database.Algorithms.DeleteAsync(name);

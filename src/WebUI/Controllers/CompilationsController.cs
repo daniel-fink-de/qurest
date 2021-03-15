@@ -28,8 +28,8 @@ namespace QuRest.WebUI.Controllers
         [HttpGet, Route("compilations")]
         public async Task<ActionResult> GetAllCompilationsAsync()
         {
-            var algorithms = await this.database.Algorithms.ReadAllAsync();
-            var compilations = algorithms.Where(a => a.Name.EndsWith("_compilation"));
+            var circuits = await this.database.Algorithms.ReadAllAsync();
+            var compilations = circuits.Where(a => a.Name.EndsWith("_compilation"));
 
             return new JsonResult(compilations);
         }
@@ -50,21 +50,21 @@ namespace QuRest.WebUI.Controllers
             [FromQuery] IDictionary<string, double>? parameterMapping = null,
             [FromQuery] IDictionary<string, string>? placeholderMapping = null)
         {
-            var algorithms = (await this.database.Algorithms.ReadAllAsync()).ToList();
-            var algorithm = algorithms.First(a => a.Name == name);
+            var circuits = (await this.database.Algorithms.ReadAllAsync()).ToList();
+            var circuit = circuits.First(a => a.Name == name);
 
             Dictionary<string, QuantumCircuit> placeholders = new();
 
             if (placeholderMapping is not null)
             {
-                placeholders = algorithms.Where(a => placeholderMapping.ContainsKey(a.Name))
+                placeholders = circuits.Where(a => placeholderMapping.ContainsKey(a.Name))
                     .ToDictionary(a => a.Name, a => a);
             }
 
             compiler.WithParameterMapping(parameterMapping ?? new Dictionary<string, double>());
             compiler.WithPlaceholderMapping(placeholders);
 
-            var compilation = await compiler.CompileAsync(algorithm);
+            var compilation = await compiler.CompileAsync(circuit);
             await this.database.Algorithms.CreateAsync(compilation);
 
             return this.Ok();

@@ -11,13 +11,13 @@ namespace QuRest.Application.UnitTests
         [Fact]
         public async Task Can_Compile_Parameterized_Gates()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("2")
                 .RX("0", "1.2")
                 .RX("1", "{theta}");
             var compilation = await this.Compiler
                 .AddParameterMapping("{theta}", 2.2)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(2);
             compilation.Steps.Should().Contain(step =>
@@ -43,13 +43,13 @@ namespace QuRest.Application.UnitTests
         [Fact]
         public async Task Can_Compile_With_Size_Parameter()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("{N}")
                 .H("0")
                 .CX("0", "2");
             var compilation = await this.Compiler
                 .AddParameterMapping("{N}", 3)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(2);
             compilation.Steps.Should().Contain(step =>
@@ -75,15 +75,15 @@ namespace QuRest.Application.UnitTests
         }
 
         [Fact]
-        public async Task Can_Compile_With_Using_Size_Parameter_In_Algorithm()
+        public async Task Can_Compile_With_Using_Size_Parameter_In_Quantum_Circuit()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("{N}")
                 .H("{N}-1")
                 .CX("0", "2");
             var compilation = await this.Compiler
                 .AddParameterMapping("{N}", 3)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(2);
             compilation.Steps.Should().Contain(step =>
@@ -109,9 +109,9 @@ namespace QuRest.Application.UnitTests
         }
 
         [Fact]
-        public async Task Can_Compile_With_Using_Parameters_In_Algorithm()
+        public async Task Can_Compile_With_Using_Parameters_In_Quantum_Circuit()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("{N}")
                 .WithParameter("{p}")
                 .H("{N}-1")
@@ -119,7 +119,7 @@ namespace QuRest.Application.UnitTests
             var compilation = await this.Compiler
                 .AddParameterMapping("{N}", 3)
                 .AddParameterMapping("{p}", 1)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(2);
             compilation.Steps.Should().Contain(step =>
@@ -147,14 +147,14 @@ namespace QuRest.Application.UnitTests
         [Fact]
         public async Task Can_Compile_With_Parameterized_For_Loop()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("{N}")
                 .For("{i}", "0", "{N}", "1")
                   .H("{i}")
                 .EndFor();
             var compilation = await this.Compiler
                 .AddParameterMapping("{N}", 4)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(4);
 
@@ -169,7 +169,7 @@ namespace QuRest.Application.UnitTests
         [Fact]
         public async Task Can_Compile_With_Nested_Parameterized_For_Loop()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("{N}")
                 .For("{i}", "0", "{N}", "1")
                     .For("{j}", "0", "{N}", "1")
@@ -182,7 +182,7 @@ namespace QuRest.Application.UnitTests
                 .AddParameterMapping("{theta_0_1}", 1.2)
                 .AddParameterMapping("{theta_1_0}", 2.1)
                 .AddParameterMapping("{theta_1_1}", 2.2)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(4);
 

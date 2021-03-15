@@ -9,25 +9,25 @@ namespace QuRest.Application.UnitTests
     public class FundamentalCompilerTests : CompilerTestBase
     {
         [Fact]
-        public async Task Can_Compile_Empty_Algorithm()
+        public async Task Can_Compile_Empty_Quantum_Circuit()
         {
-            var algorithm = new QuantumCircuit();
-            await this.Compiler.CompileAsync(algorithm);
+            var circuit = new QuantumCircuit();
+            await this.Compiler.CompileAsync(circuit);
         }
 
         [Fact]
-        public async Task Can_Compile_Empty_Algorithm_With_Basic_Information()
+        public async Task Can_Compile_Empty_Quantum_Circuit_With_Basic_Information()
         {
-            var algorithm = new QuantumCircuit()
-                .WithName("TestAlgorithm")
-                .WithDescription("Just a test algorithm")
+            var circuit = new QuantumCircuit()
+                .WithName("TestCircuit")
+                .WithDescription("Just a test circuit")
                 .WithSize("10")
                 .WithParameter("{i}")
                 .WithParameter("{j}");
-            var compilation = await this.Compiler.CompileAsync(algorithm);
+            var compilation = await this.Compiler.CompileAsync(circuit);
 
-            compilation.Name.Should().Contain("TestAlgorithm");
-            compilation.Description.Should().Be("Just a test algorithm");
+            compilation.Name.Should().Contain("TestCircuit");
+            compilation.Description.Should().Be("Just a test circuit");
             compilation.Size.Should().Be("10");
             compilation.Parameters.Should().BeNullOrEmpty("because the compilation resolved all parameters");
         }
@@ -35,11 +35,11 @@ namespace QuRest.Application.UnitTests
         [Fact]
         public async Task Can_Compile_Simple_Gates()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("2")
                 .H("0")
                 .CX("0", "1");
-            var compilation = await this.Compiler.CompileAsync(algorithm);
+            var compilation = await this.Compiler.CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(2);
             compilation.Steps.Should().Contain(step =>
@@ -65,13 +65,13 @@ namespace QuRest.Application.UnitTests
         [Fact]
         public async Task Can_Compile_With_Static_For_Loop()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("1")
                 .For("{i}", "0", "4", "1")
                   .H("0")
                 .EndFor();
             var compilation = await this.Compiler
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(4);
 
@@ -82,7 +82,7 @@ namespace QuRest.Application.UnitTests
         [Fact]
         public async Task Can_Compile_With_If_Condition()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("{N}")
                 .If("{N} = 2")
                     .H("0")
@@ -90,7 +90,7 @@ namespace QuRest.Application.UnitTests
                 .EndIf();
             var compilation = await this.Compiler
                 .AddParameterMapping("{N}", 2)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(2);
             compilation.Unitarians.Should().HaveCount(2);
@@ -100,7 +100,7 @@ namespace QuRest.Application.UnitTests
 
             var compilation2 = await this.Compiler
                 .AddParameterMapping("{N}", 1)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation2.Steps.Should().HaveCount(0);
             compilation2.Unitarians.Should().HaveCount(0);
@@ -109,7 +109,7 @@ namespace QuRest.Application.UnitTests
         [Fact]
         public async Task Can_Compile_With_If_Else_Condition()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("{N}")
                 .If("{N} = 2")
                     .H("0")
@@ -119,7 +119,7 @@ namespace QuRest.Application.UnitTests
                 .EndIf();
             var compilation = await this.Compiler
                 .AddParameterMapping("{N}", 2)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(2);
             compilation.Unitarians.Should().HaveCount(2);
@@ -129,7 +129,7 @@ namespace QuRest.Application.UnitTests
 
             var compilation2 = await this.Compiler
                 .AddParameterMapping("{N}", 1)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation2.Steps.Should().HaveCount(1);
             compilation2.Unitarians.Should().HaveCount(1);
@@ -139,7 +139,7 @@ namespace QuRest.Application.UnitTests
         [Fact]
         public async Task Can_Compile_With_If_ElseIf_Else_Condition()
         {
-            var algorithm = new QuantumCircuit()
+            var circuit = new QuantumCircuit()
                 .WithSize("{N}")
                 .If("{N} = 2")
                     .H("0")
@@ -151,7 +151,7 @@ namespace QuRest.Application.UnitTests
                 .EndIf();
             var compilation = await this.Compiler
                 .AddParameterMapping("{N}", 2)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation.Steps.Should().HaveCount(2);
             compilation.Unitarians.Should().HaveCount(2);
@@ -161,7 +161,7 @@ namespace QuRest.Application.UnitTests
 
             var compilation2 = await this.Compiler
                 .AddParameterMapping("{N}", 1)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation2.Steps.Should().HaveCount(1);
             compilation2.Unitarians.Should().HaveCount(1);
@@ -169,7 +169,7 @@ namespace QuRest.Application.UnitTests
 
             var compilation3 = await this.Compiler
                 .AddParameterMapping("{N}", 0)
-                .CompileAsync(algorithm);
+                .CompileAsync(circuit);
 
             compilation3.Steps.Should().HaveCount(1);
             compilation3.Unitarians.Should().HaveCount(1);
