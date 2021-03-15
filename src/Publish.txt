@@ -1,0 +1,9 @@
+In order to push a new local build image to docker hub, run the following:
+
+1) Create the image locally using VS
+
+2) Tag the local image
+docker tag qurest username/qurest:latest
+
+3) Push the image to docker hub
+docker push username/qurest:latest

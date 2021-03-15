@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using QuRest.Application.Abstractions;
 using QuRest.Application.Interfaces;
@@ -12,7 +13,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace QuRest.WebUI.Controllers
 {

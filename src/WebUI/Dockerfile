@@ -7,16 +7,20 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
+COPY [".config/", ".config/"]
 COPY ["WebUI/WebUI.csproj", "WebUI/"]
 COPY ["Application/Application.csproj", "Application/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 RUN dotnet restore "WebUI/WebUI.csproj"
+RUN dotnet tool restore
 COPY . .
 WORKDIR "/src/WebUI"
+RUN dotnet tool restore
 RUN dotnet build "WebUI.csproj" -c Release -o /app/build
 
 FROM build AS publish
+RUN dotnet tool restore
 RUN dotnet publish "WebUI.csproj" -c Release -o /app/publish
 
 FROM base AS final
