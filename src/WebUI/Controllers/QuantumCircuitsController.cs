@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuRest.Application.Interfaces;
 using QuRest.Domain;
@@ -7,8 +7,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using QuRest.WebUI.Model;
 
 namespace QuRest.WebUI.Controllers
 {
@@ -84,7 +82,33 @@ namespace QuRest.WebUI.Controllers
         ///
         ///     POST /quantum-circuits
         ///     {
-        ///
+        ///         "name": "MyCircuit",
+        ///         "description": "Perform a coin flip simulation.",
+        ///         "size": "1",
+        ///         "steps": [
+        ///             {
+        ///                 "index": 0,
+        ///                 "type": "Unitarian"
+        ///             },
+        ///             {
+        ///                 "index": 1,
+        ///                 "type": "Hermitian"
+        ///             }
+        ///         ],
+        ///         "unitarians": [
+        ///             {
+        ///                 "qubits": "0",
+        ///                 "type": "H",
+        ///                 "index": 0
+        ///                 }
+        ///         ],
+        ///         "hermitians": [
+        ///             {
+        ///                 "qubits": "0",
+        ///                 "type": "X",
+        ///                 "index": 1
+        ///             }
+        ///         ],
         ///     }
         ///
         /// </remarks>
@@ -116,7 +140,7 @@ namespace QuRest.WebUI.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /quantum-circuits/{name}
+        ///     GET /quantum-circuits/CoinFlip
         ///     {
         ///
         ///     }
@@ -150,9 +174,35 @@ namespace QuRest.WebUI.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /quantum-circuits/{name}
+        ///     PUT /quantum-circuits/CoinFlip
         ///     {
-        ///
+        ///         "name": "CoinFlip",
+        ///         "description": "Perform a coin flip simulation.",
+        ///         "size": "1",
+        ///         "steps": [
+        ///             {
+        ///                 "index": 0,
+        ///                 "type": "Unitarian"
+        ///             },
+        ///             {
+        ///                 "index": 1,
+        ///                 "type": "Hermitian"
+        ///             }
+        ///         ],
+        ///         "unitarians": [
+        ///             {
+        ///                 "qubits": "0",
+        ///                 "type": "H",
+        ///                 "index": 0
+        ///                 }
+        ///         ],
+        ///         "hermitians": [
+        ///             {
+        ///                 "qubits": "0",
+        ///                 "type": "X",
+        ///                 "index": 1
+        ///             }
+        ///         ],
         ///     }
         ///
         /// </remarks>
@@ -188,7 +238,7 @@ namespace QuRest.WebUI.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     DELETE /quantum-circuits/{name}
+        ///     DELETE /quantum-circuits/CoinFlip
         ///     {
         ///
         ///     }
