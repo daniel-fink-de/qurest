@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using QuRest.Application;
 
-namespace QuRest
+namespace QuRest.DependencyInjection
 {
     public static class DependencyInjection
     {

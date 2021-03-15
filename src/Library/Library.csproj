@@ -4,6 +4,16 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>QuRest</RootNamespace>
     <AssemblyName>QuRest</AssemblyName>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>A REST-full Approach for Hybrid Quantum-Classical Circuit Modeling</Description>
+    <Copyright>Daniel Fink</Copyright>
+    <PackageLicenseExpression>Apache-2.0+</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/StuttgarterDotNet/qurest</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/StuttgarterDotNet/qurest</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>quantum-computing,rest-api,hybrid-quantum-classical-algorithms</PackageTags>
+    <Authors>Daniel Fink</Authors>
   </PropertyGroup>
 
   <ItemGroup>

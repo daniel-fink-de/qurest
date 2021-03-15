@@ -1,8 +1,7 @@
-﻿using QuRest.Domain;
-using System.Collections.Generic;
-// ReSharper disable CheckNamespace
+﻿using System.Collections.Generic;
+using QuRest.Domain;
 
-namespace QuRest
+namespace QuRest.Application.Examples
 {
     public static class QuantumCircuitExamples
     {
