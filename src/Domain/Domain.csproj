@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>QuRest.Domain</RootNamespace>
+    <GenerateCode>True</GenerateCode>
+  </PropertyGroup>
+
+  <Target Name="GenerateModelFromXsd" BeforeTargets="PrepareForBuild" Condition="'$(GenerateCode)'=='True' ">
+    <Exec Command="dotnet xscgen -v --nullable --dc --nu -n qxml=QuRest.$(ProjectName) $(ProjectDir)qxml.xsd" />
+    <Copy SourceFiles="QuRest.$(ProjectName).cs" DestinationFiles="qxml.cs" />
+    <Delete Files="QuRest.$(ProjectName).cs" />
+  </Target>
+
+  <ItemGroup>
+    <None Update="qxml.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="qxml" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="qxml" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <!-- definition of simple elements -->
+  <xs:simpleType name="unitarianType" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="H"/>
+      <xs:enumeration value="X"/>
+      <xs:enumeration value="Z"/>
+      <xs:enumeration value="CX"/>
+      <xs:enumeration value="CZ"/>
+      <xs:enumeration value="RX"/>
+      <xs:enumeration value="SWAP"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="hermitianType" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="X"/>
+      <xs:enumeration value="SET0"/>
+      <xs:enumeration value="SET1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="loopControlType" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ForLoopStart"/>
+      <xs:enumeration value="ForLoopEnd"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="conditionControlType" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="If"/>
+      <xs:enumeration value="ElseIf"/>
+      <xs:enumeration value="Else"/>
+      <xs:enumeration value="EndIf"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="mathRelationType" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Equals"/>
+      <xs:enumeration value="LowerEquals"/>
+      <xs:enumeration value="Lower"/>
+      <xs:enumeration value="Greater"/>
+      <xs:enumeration value="GreaterEquals"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="stepType" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unitarian"/>
+      <xs:enumeration value="Hermitian"/>
+      <xs:enumeration value="Placeholder"/>
+      <xs:enumeration value="Loop"/>
+      <xs:enumeration value="Condition"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- definition of complex elements -->
+  <xs:complexType name="steps">
+    <xs:sequence>
+      <xs:element name="step" type="step" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="unitarians">
+    <xs:sequence>
+      <xs:element name="unitarian" type="unitarian" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="hermitians">
+    <xs:sequence>
+      <xs:element name="hermitian" type="hermitian" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="placeholders">
+    <xs:sequence>
+      <xs:element name="placeholder" type="placeholder" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="loops">
+    <xs:sequence>
+      <xs:element name="loop" type="loop" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="conditions">
+    <xs:sequence>
+      <xs:element name="condition" type="condition" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="project">
+    <xs:sequence>
+      <xs:element name="quantumCircuits" type="quantumCircuit" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="quantumCircuit">
+    <xs:choice>
+      <xs:sequence>
+        <xs:element name="steps" type="steps" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="unitarians" type="unitarians" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="hermitians" type="hermitians" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="placeholders" type="placeholders" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="loops" type="loops" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="conditions" type="conditions" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:choice>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="size" type="xs:string" use="required"/>
+    <xs:attribute name="parameters" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="unitarian">
+    <xs:attribute name="qubits" type="xs:string" use="required"/>
+    <xs:attribute name="parameters" type="xs:string" use="optional"/>
+    <xs:attribute name="type" type="unitarianType" use="required"/>
+    <xs:attribute name="index" type="xs:int" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="hermitian">
+    <xs:attribute name="qubits" type="xs:string" use="required"/>
+    <xs:attribute name="parameters" type="xs:string" use="optional"/>
+    <xs:attribute name="type" type="hermitianType" use="required"/>
+    <xs:attribute name="index" type="xs:int" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="placeholder">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="index" type="xs:int" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="loop">
+    <xs:attribute name="type" type="loopControlType" use="required"/>
+    <xs:attribute name="variable" type="xs:string" use="optional"/>
+    <xs:attribute name="start" type="xs:string" use="optional"/>
+    <xs:attribute name="end" type="xs:string" use="optional"/>
+    <xs:attribute name="increment" type="xs:string" use="optional"/>
+    <xs:attribute name="index" type="xs:int" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="condition">
+    <xs:attribute name="type" type="conditionControlType" use="required"/>
+    <xs:attribute name="expression" type="xs:string" use="required"/>
+    <xs:attribute name="index" type="xs:int" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="step">
+    <xs:attribute name="index" type="xs:int" use="required"/>
+    <xs:attribute name="type" type="stepType" use="required"/>
+  </xs:complexType>
+
+  <!-- definition of the root element -->
+  <xs:element name="project" type="project"/>
+
+</xs:schema>
