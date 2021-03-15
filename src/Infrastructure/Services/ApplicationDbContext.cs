@@ -5,12 +5,12 @@ namespace QuRest.Infrastructure.Services
 {
     public class ApplicationDbContext : IApplicationDbContext
     {
-        public IEntityCrudService<QuantumCircuit> Algorithms { get; }
+        public IEntityCrudService<QuantumCircuit> QuantumCircuits { get; }
         public IEntityCrudService<QuantumCircuit> Compilations { get; }
 
         public ApplicationDbContext(IEntityCrudService<QuantumCircuit> algorithms, IEntityCrudService<QuantumCircuit> compilations)
         {
-            this.Algorithms = algorithms;
+            this.QuantumCircuits = algorithms;
             this.Compilations = compilations;
         }
     }

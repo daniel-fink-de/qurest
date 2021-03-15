@@ -22,7 +22,7 @@ namespace QuRest.WebUI.Controllers
         [HttpGet, Route("quantum-circuits")]
         public async Task<ActionResult<IEnumerable<QuantumCircuit>>> GetAllQuantumCircuitsAsync()
         {
-            var circuits = await this.database.Algorithms.ReadAllAsync();
+            var circuits = await this.database.QuantumCircuits.ReadAllAsync();
             var realCircuits = circuits.Where(a => !a.Name.EndsWith("_compilation"));
 
             return new JsonResult(realCircuits);
@@ -31,7 +31,7 @@ namespace QuRest.WebUI.Controllers
         [HttpGet, Route("quantum-circuits/overview")]
         public async Task<ActionResult<IEnumerable<string>>> GetQuantumCircuitsOverviewAsync()
         {
-            var overviewStrings = (await this.database.Algorithms.ReadAllAsync())
+            var overviewStrings = (await this.database.QuantumCircuits.ReadAllAsync())
                 .Where(a => !a.Name.EndsWith("_compilation"))
                 .Select(a => $"{a.Name}: {a.Description}");
 
@@ -40,9 +40,9 @@ namespace QuRest.WebUI.Controllers
 
         [HttpPost, Route("quantum-circuits")]
         public async Task<ActionResult> CreateQuantumCircuitAsync(
-            [Required, FromBody] QuantumCircuit algorithm)
+            [Required, FromBody] QuantumCircuit quantumCircuit)
         {
-            await this.database.Algorithms.CreateAsync(algorithm);
+            await this.database.QuantumCircuits.CreateAsync(quantumCircuit);
 
             return this.Ok();
         }
@@ -51,7 +51,7 @@ namespace QuRest.WebUI.Controllers
         public async Task<ActionResult<QuantumCircuit>> GetQuantumCircuitAsync(
             [Required, FromRoute] string name)
         {
-            var circuit = await this.database.Algorithms.ReadAsync(name);
+            var circuit = await this.database.QuantumCircuits.ReadAsync(name);
 
             return new JsonResult(circuit);
         }
@@ -59,9 +59,9 @@ namespace QuRest.WebUI.Controllers
         [HttpPut, Route("quantum-circuits/{name}")]
         public async Task<ActionResult> UpdateQuantumCircuitAsync(
             [Required, FromRoute] string name,
-            [Required, FromBody] QuantumCircuit algorithm)
+            [Required, FromBody] QuantumCircuit quantumCircuit)
         {
-            await this.database.Algorithms.UpdateAsync(algorithm);
+            await this.database.QuantumCircuits.UpdateAsync(quantumCircuit);
 
             return this.Ok();
         }
@@ -70,7 +70,7 @@ namespace QuRest.WebUI.Controllers
         public async Task<ActionResult> DeleteQuantumCircuitAsync(
             [Required, FromRoute] string name)
         {
-            await this.database.Algorithms.DeleteAsync(name);
+            await this.database.QuantumCircuits.DeleteAsync(name);
 
             return this.Ok();
         }

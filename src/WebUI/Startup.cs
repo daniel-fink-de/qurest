@@ -68,7 +68,7 @@ namespace QuRest.WebUI
 
             foreach (var circuit in QuantumCircuitExamples.All)
             {
-                db.Algorithms.CreateAsync(circuit);
+                db.QuantumCircuits.CreateAsync(circuit);
             }
         }
     }

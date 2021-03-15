@@ -4,6 +4,6 @@ namespace QuRest.Application.Interfaces
 {
     public interface IApplicationDbContext
     {
-        public IEntityCrudService<QuantumCircuit> Algorithms { get; }
+        public IEntityCrudService<QuantumCircuit> QuantumCircuits { get; }
     }
 }

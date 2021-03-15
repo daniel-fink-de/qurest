@@ -28,7 +28,7 @@ namespace QuRest.WebUI.Controllers
         [HttpGet, Route("compilations")]
         public async Task<ActionResult> GetAllCompilationsAsync()
         {
-            var circuits = await this.database.Algorithms.ReadAllAsync();
+            var circuits = await this.database.QuantumCircuits.ReadAllAsync();
             var compilations = circuits.Where(a => a.Name.EndsWith("_compilation"));
 
             return new JsonResult(compilations);
@@ -38,19 +38,19 @@ namespace QuRest.WebUI.Controllers
         public async Task<ActionResult> GetCompilationAsync(
             [Required, FromRoute] string name)
         {
-            var compilation = await this.database.Algorithms.ReadAsync($"{name}_compilation");
+            var compilation = await this.database.QuantumCircuits.ReadAsync($"{name}_compilation");
 
             return new JsonResult(compilation);
         }
 
         [HttpPut, Route("compilations/{name}")]
-        public async Task<ActionResult> CompileAlgorithmAsync(
+        public async Task<ActionResult> CompileAsync(
             [Required, FromRoute] string name,
             [FromServices] IQxmlCompiler compiler,
             [FromQuery] IDictionary<string, double>? parameterMapping = null,
             [FromQuery] IDictionary<string, string>? placeholderMapping = null)
         {
-            var circuits = (await this.database.Algorithms.ReadAllAsync()).ToList();
+            var circuits = (await this.database.QuantumCircuits.ReadAllAsync()).ToList();
             var circuit = circuits.First(a => a.Name == name);
 
             Dictionary<string, QuantumCircuit> placeholders = new();
@@ -65,7 +65,7 @@ namespace QuRest.WebUI.Controllers
             compiler.WithPlaceholderMapping(placeholders);
 
             var compilation = await compiler.CompileAsync(circuit);
-            await this.database.Algorithms.CreateAsync(compilation);
+            await this.database.QuantumCircuits.CreateAsync(compilation);
 
             return this.Ok();
         }
@@ -75,7 +75,7 @@ namespace QuRest.WebUI.Controllers
             [FromServices] IQxmlTranslator translator,
             [Required, FromRoute] string name)
         {
-            var compilation = await this.database.Algorithms.ReadAsync($"{name}_compilation");
+            var compilation = await this.database.QuantumCircuits.ReadAsync($"{name}_compilation");
             var qasm = await translator.TranslateToQasmAsync(compilation);
 
             return new ContentResult
@@ -90,7 +90,7 @@ namespace QuRest.WebUI.Controllers
         public async Task<ActionResult> DeleteCompilationAsync(
             [Required, FromRoute] string name)
         {
-            await this.database.Algorithms.DeleteAsync($"{name}_compilation");
+            await this.database.QuantumCircuits.DeleteAsync($"{name}_compilation");
 
             return this.Ok();
         }
@@ -100,7 +100,7 @@ namespace QuRest.WebUI.Controllers
             [FromServices] IQxmlDrawer drawer,
             [Required, FromRoute] string name)
         {
-            var compilation = await this.database.Algorithms.ReadAsync($"{name}_compilation");
+            var compilation = await this.database.QuantumCircuits.ReadAsync($"{name}_compilation");
             var svg = await drawer.DrawAsync(compilation);
 
             return new ContentResult
@@ -116,7 +116,7 @@ namespace QuRest.WebUI.Controllers
             [FromServices] IQxmlDrawer drawer,
             [Required, FromRoute] string name)
         {
-            var compilation = await this.database.Algorithms.ReadAsync($"{name}_compilation");
+            var compilation = await this.database.QuantumCircuits.ReadAsync($"{name}_compilation");
             var svg = await drawer.DrawAsync(compilation);
 
             await System.IO.File.WriteAllTextAsync($"{name}.svg", svg);
