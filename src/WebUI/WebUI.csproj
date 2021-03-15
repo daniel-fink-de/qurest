@@ -5,6 +5,8 @@
     <UserSecretsId>449ab792-d1f7-4ef0-b22b-459cbe3c7598</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <RootNamespace>QuRest.WebUI</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

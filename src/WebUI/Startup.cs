@@ -10,6 +10,9 @@ using QuRest.Application.Examples;
 using QuRest.Application.Interfaces;
 using QuRest.Infrastructure;
 using QuRest.WebUI.OpenApi;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace QuRest.WebUI
 {
@@ -38,9 +41,30 @@ namespace QuRest.WebUI
             services.AddSwaggerGenNewtonsoftSupport();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "QuRest", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "QuRest",
+                    Version = "v1",
+                    Description = "A REST-full Approach for Hybrid Quantum-Classical Circuit Modeling",
+                    TermsOfService = new Uri("https://github.com/StuttgarterDotNet/qurest"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Daniel Fink",
+                        Url = new Uri("https://github.com/StuttgarterDotNet")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under Apache 2.0",
+                        Url = new Uri("https://opensource.org/licenses/Apache-2.0")
+                    }
+                });
+
                 c.EnableAnnotations();
                 c.DocumentFilter<FeatureGateFilter>();
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
