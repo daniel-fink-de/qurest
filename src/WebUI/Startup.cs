@@ -6,7 +6,6 @@ using Microsoft.FeatureManagement;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using QuRest.Application;
-using QuRest.Application.Examples;
 using QuRest.Application.Interfaces;
 using QuRest.Infrastructure;
 using QuRest.WebUI.OpenApi;
