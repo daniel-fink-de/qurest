@@ -30,7 +30,7 @@ namespace QuRest.WebUI
             services.AddApplication();
             services.AddInfrastructure(this.Configuration);
 
-            services.AddControllers();
+            services.AddControllers(o => o.InputFormatters.Insert(o.InputFormatters.Count, new TextPlainInputFormatter()));
 
             services.AddMvcCore()
                 .AddApiExplorer()
