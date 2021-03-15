@@ -24,7 +24,7 @@ var qc = new QuantumCircuit()
 The output of the compilation with *N=4*:
 
 <div style="text-align:center">
-<img src="./images/4-Qubit-GHZ.svg">
+<img src="https://github.com/StuttgarterDotNet/qurest/blob/main/images/4-Qubit-GHZ.svg">
 </div>
 
 ## Disclaimer of Warranty
