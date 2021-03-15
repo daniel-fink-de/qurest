@@ -8,9 +8,9 @@ namespace QuRest.Infrastructure.Services
         public IEntityCrudService<QuantumCircuit> QuantumCircuits { get; }
         public IEntityCrudService<QuantumCircuit> Compilations { get; }
 
-        public ApplicationDbContext(IEntityCrudService<QuantumCircuit> algorithms, IEntityCrudService<QuantumCircuit> compilations)
+        public ApplicationDbContext(IEntityCrudService<QuantumCircuit> circuits, IEntityCrudService<QuantumCircuit> compilations)
         {
-            this.QuantumCircuits = algorithms;
+            this.QuantumCircuits = circuits;
             this.Compilations = compilations;
         }
     }

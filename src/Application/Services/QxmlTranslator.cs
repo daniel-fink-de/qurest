@@ -21,25 +21,25 @@ namespace QuRest.Application.Services
             this.quantumProgrammingStudioService = quantumProgrammingStudioService;
         }
 
-        public async Task<string> TranslateToQasmAsync(QuantumCircuit algorithm)
+        public async Task<string> TranslateToQasmAsync(QuantumCircuit quantumCircuit)
         {
             return await Task.Run(() =>
              {
                  var qasm = new StringBuilder();
 
-                 qasm.Append(this.GenerateQasmHeader(algorithm));
+                 qasm.Append(this.GenerateQasmHeader(quantumCircuit));
 
                  // add gates and measurements
-                 foreach (var step in algorithm.Steps)
+                 foreach (var step in quantumCircuit.Steps)
                  {
                      switch (step.Type)
                      {
                          case StepType.Unitarian:
-                             var unitarian = this.GetUnitarianFromAlgorithm(step.Index, algorithm);
+                             var unitarian = this.GetUnitarianFromCircuit(step.Index, quantumCircuit);
                              qasm.Append(GenerateQasmUnitarian(unitarian));
                              break;
                          case StepType.Hermitian:
-                             var hermitian = this.GetHermitianFromAlgorithm(step.Index, algorithm);
+                             var hermitian = this.GetHermitianFromCircuit(step.Index, quantumCircuit);
                              qasm.Append(GenerateQasmHermitian(hermitian));
                              break;
                          case StepType.Placeholder:
@@ -57,24 +57,24 @@ namespace QuRest.Application.Services
              });
         }
 
-        public async Task<string> TranslateToQiskitAsync(QuantumCircuit algorithm)
+        public async Task<string> TranslateToQiskitAsync(QuantumCircuit quantumCircuit)
         {
-            return await this.quantumProgrammingStudioService.QasmToQiskit(await this.TranslateToQasmAsync(algorithm));
+            return await this.quantumProgrammingStudioService.QasmToQiskit(await this.TranslateToQasmAsync(quantumCircuit));
         }
 
-        public async Task<string> TranslateToPyQuilAsync(QuantumCircuit algorithm)
+        public async Task<string> TranslateToPyQuilAsync(QuantumCircuit quantumCircuit)
         {
-            return await this.quantumProgrammingStudioService.QasmToPyquil(await this.TranslateToQasmAsync(algorithm));
+            return await this.quantumProgrammingStudioService.QasmToPyquil(await this.TranslateToQasmAsync(quantumCircuit));
         }
 
-        private string GenerateQasmHeader(QuantumCircuit algorithm)
+        private string GenerateQasmHeader(QuantumCircuit circuit)
         {
             var qasm = new StringBuilder();
 
-            if (!int.TryParse(algorithm.Size, out int size))
+            if (!int.TryParse(circuit.Size, out int size))
                 throw new InvalidOperationException("No size specified!");
 
-            qasm.Append(this.GenerateQasmCommentHeader(algorithm));
+            qasm.Append(this.GenerateQasmCommentHeader(circuit));
 
             // add header information
             qasm.Append("OPENQASM 2.0;");
@@ -92,25 +92,25 @@ namespace QuRest.Application.Services
             return qasm.ToString();
         }
 
-        private string GenerateQasmCommentHeader(QuantumCircuit algorithm)
+        private string GenerateQasmCommentHeader(QuantumCircuit circuit)
         {
             var qasm = new StringBuilder();
 
             var nameComment = new StringBuilder("// [NAME]" + Environment.NewLine);
             var descriptionComment = new StringBuilder("// [DESCRIPTION]" + Environment.NewLine);
 
-            if (!string.IsNullOrEmpty(algorithm.Name))
+            if (!string.IsNullOrEmpty(circuit.Name))
             {
-                nameComment.Append("// ").Append(algorithm.Name).Append(Environment.NewLine);
+                nameComment.Append("// ").Append(circuit.Name).Append(Environment.NewLine);
             }
             else
             {
                 nameComment.Append("//").Append(Environment.NewLine);
             }
 
-            if (!string.IsNullOrEmpty(algorithm.Description))
+            if (!string.IsNullOrEmpty(circuit.Description))
             {
-                foreach (var line in algorithm.Description.Split(Environment.NewLine))
+                foreach (var line in circuit.Description.Split(Environment.NewLine))
                 {
                     descriptionComment.Append("// ").Append(line).Append(Environment.NewLine);
                 }
@@ -128,16 +128,16 @@ namespace QuRest.Application.Services
             return qasm.ToString();
         }
 
-        private Unitarian GetUnitarianFromAlgorithm(int index, QuantumCircuit algorithm)
+        private Unitarian GetUnitarianFromCircuit(int index, QuantumCircuit circuit)
         {
-            var unitarian = algorithm.Unitarians.FirstOrDefault(u => u.Index == index);
+            var unitarian = circuit.Unitarians.FirstOrDefault(u => u.Index == index);
             if (unitarian is null) throw new InvalidOperationException($"The unitarian with the index \"{index}\" could not be found.");
             return unitarian;
         }
 
-        private Hermitian GetHermitianFromAlgorithm(int index, QuantumCircuit algorithm)
+        private Hermitian GetHermitianFromCircuit(int index, QuantumCircuit circuit)
         {
-            var hermitian = algorithm.Hermitians.FirstOrDefault(h => h.Index == index);
+            var hermitian = circuit.Hermitians.FirstOrDefault(h => h.Index == index);
             if (hermitian is null) throw new InvalidOperationException($"The hermitian with the index \"{index}\" could not be found.");
             return hermitian;
         }

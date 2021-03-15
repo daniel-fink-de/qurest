@@ -14,7 +14,7 @@ namespace QuRest.Application.Services
     public class QxmlCompiler : IQxmlCompiler
     {
         private QuantumCircuit compilation = new() { Name = "Empty" };
-        private QuantumCircuit algorithmToCompile = new() { Name = "Empty" };
+        private QuantumCircuit circuitToCompile = new() { Name = "Empty" };
         private readonly IList<string> loopVariableNames = new List<string>();
 
         // current variable value, max value, index of starting the loop
@@ -42,9 +42,9 @@ namespace QuRest.Application.Services
             return this;
         }
 
-        public IQxmlCompiler AddPlaceholderMapping(string placeholderName, QuantumCircuit algorithm)
+        public IQxmlCompiler AddPlaceholderMapping(string placeholderName, QuantumCircuit quantumCircuit)
         {
-            this.placeholderMapping[placeholderName] = algorithm;
+            this.placeholderMapping[placeholderName] = quantumCircuit;
 
             return this;
         }
@@ -56,40 +56,40 @@ namespace QuRest.Application.Services
 
         }
 
-        public async Task<QuantumCircuit> CompileAsync(QuantumCircuit algorithm)
+        public async Task<QuantumCircuit> CompileAsync(QuantumCircuit quantumCircuit)
         {
             // clear everything from previous
             this.loopVariableNames.Clear();
             this.loopVariableValues.Clear();
-            this.algorithmToCompile = algorithm;
-            this.compilation = new QuantumCircuit().WithName(algorithm.Name + "_compilation");
+            this.circuitToCompile = quantumCircuit;
+            this.compilation = new QuantumCircuit().WithName(quantumCircuit.Name + "_compilation");
 
-            // add all the parameters from old algorithmToCompile
-            foreach (var parameter in this.algorithmToCompile.ParameterList)
+            // add all the parameters from old circuitToCompile
+            foreach (var parameter in this.circuitToCompile.ParameterList)
             {
                 this.compilation.WithParameter(parameter);
             }
 
             // if the size is int already, use it
-            var sizeIsInt = this.TryParseInt(this.algorithmToCompile.Size, out string intString);
+            var sizeIsInt = this.TryParseInt(this.circuitToCompile.Size, out string intString);
             if (sizeIsInt)
             {
-                this.algorithmToCompile.Size = intString;
+                this.circuitToCompile.Size = intString;
                 this.compilation.Size = intString;
             }
             // if not, create a parameter for it
             else
             {
-                this.algorithmToCompile.WithParameter(this.algorithmToCompile.Size);
+                this.circuitToCompile.WithParameter(this.circuitToCompile.Size);
             }
 
-            if (!string.IsNullOrEmpty(algorithm.Description))
+            if (!string.IsNullOrEmpty(quantumCircuit.Description))
             {
-                this.compilation.WithDescription(this.ReplaceParameterNameAndLoopVariableWithDoubleValue(algorithm.Description));
+                this.compilation.WithDescription(this.ReplaceParameterNameAndLoopVariableWithDoubleValue(quantumCircuit.Description));
             }
 
             // run the compilation recursively
-            await Task.Run(() => this.CompileRecursive(0, this.algorithmToCompile));
+            await Task.Run(() => this.CompileRecursive(0, this.circuitToCompile));
 
             // if size was not already int, replace now with parameter mapping 
             if (!sizeIsInt)
@@ -161,7 +161,7 @@ namespace QuRest.Application.Services
             source = this.ReplaceLoopVariableWithDoubleValue(source);
 
             var hasParameter = false;
-            foreach (var parameter in this.algorithmToCompile.ParameterList)
+            foreach (var parameter in this.circuitToCompile.ParameterList)
             {
                 var formattedParameter = this.ReplaceLoopVariableWithDoubleValue(parameter);
                 if (!source.Contains(formattedParameter)) continue;
@@ -185,7 +185,7 @@ namespace QuRest.Application.Services
             source = this.ReplaceLoopVariableWithDoubleValue(source);
 
             var hasParameter = false;
-            foreach (var parameter in this.algorithmToCompile.ParameterList)
+            foreach (var parameter in this.circuitToCompile.ParameterList)
             {
                 var formattedParameter = this.ReplaceLoopVariableWithDoubleValue(parameter);
                 if (!source.Contains(formattedParameter)) continue;
@@ -245,36 +245,36 @@ namespace QuRest.Application.Services
             return f();
         }
 
-        private int CompileRecursive(int index, QuantumCircuit algorithm)
+        private int CompileRecursive(int index, QuantumCircuit circuit)
         {
             while (true)
             {
                 // recursive break condition
                 // if we finished all steps
-                if (index >= algorithm.Steps.Count) return 1000000;
-                var step = GetStepFromAlgorithm(index, algorithm);
+                if (index >= circuit.Steps.Count) return 1000000;
+                var step = GetStepFromCircuit(index, circuit);
 
                 switch (step.Type)
                 {
                     case StepType.Unitarian:
-                        var unitarian = this.GetUnitarianFromAlgorithm(index, algorithm);
+                        var unitarian = this.GetUnitarianFromCircuit(index, circuit);
                         this.AddUnitarian(unitarian);
                         break;
                     case StepType.Hermitian:
-                        var hermitian = this.GetHermitianFromAlgorithm(index, algorithm);
+                        var hermitian = this.GetHermitianFromCircuit(index, circuit);
                         this.AddHermitian(hermitian);
                         break;
                     case StepType.Placeholder:
-                        var placeholder = this.GetPlaceholderFromAlgorithm(index, algorithm);
-                        this.ResolvePlaceholderAndAddAlgorithm(placeholder);
+                        var placeholder = this.GetPlaceholderFromCircuit(index, circuit);
+                        this.ResolvePlaceholderAndAddCircuit(placeholder);
                         break;
                     case StepType.Loop:
-                        var loop = this.GetLoopFromAlgorithm(index, algorithm);
-                        index = this.AddLoop(loop, algorithm);
+                        var loop = this.GetLoopFromCircuit(index, circuit);
+                        index = this.AddLoop(loop, circuit);
                         break;
                     case StepType.Condition:
-                        var branch = this.GetConditionFromAlgorithm(index, algorithm);
-                        index = this.AddCondition(branch, algorithm);
+                        var branch = this.GetConditionFromCircuit(index, circuit);
+                        index = this.AddCondition(branch, circuit);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -284,9 +284,9 @@ namespace QuRest.Application.Services
             }
         }
 
-        private Step GetStepFromAlgorithm(int index, QuantumCircuit algorithm)
+        private Step GetStepFromCircuit(int index, QuantumCircuit circuit)
         {
-            var step = algorithm.Steps.FirstOrDefault(s => s.Index == index);
+            var step = circuit.Steps.FirstOrDefault(s => s.Index == index);
             if (step is null)
             {
                 throw new InvalidOperationException($"The step with the index \"{index}\" could not be found.");
@@ -295,9 +295,9 @@ namespace QuRest.Application.Services
             return step;
         }
 
-        private Unitarian GetUnitarianFromAlgorithm(int index, QuantumCircuit algorithm)
+        private Unitarian GetUnitarianFromCircuit(int index, QuantumCircuit circuit)
         {
-            var unitarian = algorithm.Unitarians.FirstOrDefault(u => u.Index == index);
+            var unitarian = circuit.Unitarians.FirstOrDefault(u => u.Index == index);
             if (unitarian is null)
             {
                 throw new InvalidOperationException($"The unitarian with the index \"{index}\" could not be found.");
@@ -306,9 +306,9 @@ namespace QuRest.Application.Services
             return unitarian;
         }
 
-        private Hermitian GetHermitianFromAlgorithm(int index, QuantumCircuit algorithm)
+        private Hermitian GetHermitianFromCircuit(int index, QuantumCircuit circuit)
         {
-            var hermitian = algorithm.Hermitians.FirstOrDefault(h => h.Index == index);
+            var hermitian = circuit.Hermitians.FirstOrDefault(h => h.Index == index);
             if (hermitian is null)
             {
                 throw new InvalidOperationException($"The hermitian with the index \"{index}\" could not be found.");
@@ -317,9 +317,9 @@ namespace QuRest.Application.Services
             return hermitian;
         }
 
-        private Condition GetConditionFromAlgorithm(int index, QuantumCircuit algorithm)
+        private Condition GetConditionFromCircuit(int index, QuantumCircuit circuit)
         {
-            var branch = algorithm.Conditions.FirstOrDefault(b => b.Index == index);
+            var branch = circuit.Conditions.FirstOrDefault(b => b.Index == index);
             if (branch is null)
             {
                 throw new InvalidOperationException($"The condition with the index \"{index}\" could not be found.");
@@ -328,9 +328,9 @@ namespace QuRest.Application.Services
             return branch;
         }
 
-        private Loop GetLoopFromAlgorithm(int index, QuantumCircuit algorithm)
+        private Loop GetLoopFromCircuit(int index, QuantumCircuit circuit)
         {
-            var loop = algorithm.Loops.FirstOrDefault(l => l.Index == index);
+            var loop = circuit.Loops.FirstOrDefault(l => l.Index == index);
             if (loop is null)
             {
                 throw new InvalidOperationException($"The loop with the index \"{index}\" could not be found.");
@@ -339,9 +339,9 @@ namespace QuRest.Application.Services
             return loop;
         }
 
-        private Placeholder GetPlaceholderFromAlgorithm(int index, QuantumCircuit algorithm)
+        private Placeholder GetPlaceholderFromCircuit(int index, QuantumCircuit circuit)
         {
-            var placeholder = algorithm.Placeholders.FirstOrDefault(p => p.Index == index);
+            var placeholder = circuit.Placeholders.FirstOrDefault(p => p.Index == index);
             if (placeholder is null)
             {
                 throw new InvalidOperationException($"The placeholder with the index \"{index}\" could not be found.");
@@ -350,7 +350,7 @@ namespace QuRest.Application.Services
             return placeholder;
         }
 
-        private int AddLoop(Loop loop, QuantumCircuit algorithm)
+        private int AddLoop(Loop loop, QuantumCircuit circuit)
         {
             int index;
 
@@ -373,11 +373,11 @@ namespace QuRest.Application.Services
 
                     var indexAfterLoop = 0;
                     var amountOfLoops = 1;
-                    foreach (var step in algorithm.Steps)
+                    foreach (var step in circuit.Steps)
                     {
                         if (step.Index <= tempIndex || step.Type != StepType.Loop) continue;
 
-                        var loopEnd = this.GetLoopFromAlgorithm(step.Index, algorithm);
+                        var loopEnd = this.GetLoopFromCircuit(step.Index, circuit);
                         if (loopEnd.Type == LoopControlType.ForLoopStart)
                         {
                             amountOfLoops++;
@@ -396,7 +396,7 @@ namespace QuRest.Application.Services
                     for (var i = start; i < end; i += increment)
                     {
                         this.loopVariableValues[variable] = (i, end, tempIndex);
-                        this.CompileRecursive(tempIndex + 1, algorithm);
+                        this.CompileRecursive(tempIndex + 1, circuit);
                     }
                     index = indexAfterLoop;
                     break;
@@ -454,33 +454,33 @@ namespace QuRest.Application.Services
             this.compilation.Hermitian(hermitian.Type, qubitString, parameterString);
         }
 
-        private void ResolvePlaceholderAndAddAlgorithm(Placeholder placeholder)
+        private void ResolvePlaceholderAndAddCircuit(Placeholder placeholder)
         {
             if (!this.placeholderMapping.ContainsKey(placeholder.Name))
             {
                 throw new InvalidOperationException($"The placeholder with the name \"{placeholder.Name}\" has no mapping.");
             }
-            this.AddAlgorithm(this.placeholderMapping[placeholder.Name]);
+            this.AddCircuit(this.placeholderMapping[placeholder.Name]);
         }
 
-        private void AddAlgorithm(QuantumCircuit algorithm)
+        private void AddCircuit(QuantumCircuit circuit)
         {
-            foreach (var parameter in algorithm.ParameterList)
+            foreach (var parameter in circuit.ParameterList)
             {
                 this.compilation.WithParameter(parameter);
             }
 
-            this.CompileRecursive(0, algorithm);
+            this.CompileRecursive(0, circuit);
         }
 
-        private int AddCondition(Condition condition, QuantumCircuit algorithm)
+        private int AddCondition(Condition condition, QuantumCircuit circuit)
         {
             if (condition.Type != ConditionControlType.If)
             {
                 return 100000;
             }
 
-            var currentConditions = this.GetCurrentConditions(condition.Index, algorithm);
+            var currentConditions = this.GetCurrentConditions(condition.Index, circuit);
             var indexAfterCondition = currentConditions.First(cc => cc.Value == ConditionControlType.EndIf).Key + 1;
             var indexToGoTo = indexAfterCondition;
 
@@ -497,7 +497,7 @@ namespace QuRest.Application.Services
                 {
                     if (type != ConditionControlType.ElseIf) continue;
 
-                    var elseIfExpression = algorithm.Conditions.First(cond => cond.Index == index).Expression;
+                    var elseIfExpression = circuit.Conditions.First(cond => cond.Index == index).Expression;
                     elseIfExpression = this.ReplaceParameterNameAndLoopVariableWithDoubleValue(elseIfExpression);
                     if (!this.ConvertStringExpression<bool>(elseIfExpression)) continue;
 
@@ -512,19 +512,19 @@ namespace QuRest.Application.Services
                 }
             }
 
-            this.CompileRecursive(indexToGoTo, algorithm);
+            this.CompileRecursive(indexToGoTo, circuit);
             return indexAfterCondition;
         }
 
-        private IDictionary<int, ConditionControlType> GetCurrentConditions(int ifIndex, QuantumCircuit algorithm)
+        private IDictionary<int, ConditionControlType> GetCurrentConditions(int ifIndex, QuantumCircuit circuit)
         {
             var amountNestedIfs = 0;
             var result = new Dictionary<int, ConditionControlType>();
-            for (var index = ifIndex + 1; index < algorithm.Steps.Count; index++)
+            for (var index = ifIndex + 1; index < circuit.Steps.Count; index++)
             {
-                if (algorithm.Steps.First(step => step.Index == index).Type == StepType.Condition)
+                if (circuit.Steps.First(step => step.Index == index).Type == StepType.Condition)
                 {
-                    switch (algorithm.Conditions.First(cond => cond.Index == index).Type)
+                    switch (circuit.Conditions.First(cond => cond.Index == index).Type)
                     {
                         case ConditionControlType.If:
                             amountNestedIfs++;

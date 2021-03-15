@@ -7,6 +7,6 @@ namespace QuRest.Application.Abstractions
     {
         public Task<string> DrawAsync(string qasm);
 
-        public Task<string> DrawAsync(QuantumCircuit algorithm);
+        public Task<string> DrawAsync(QuantumCircuit quantumCircuit);
     }
 }

@@ -23,9 +23,9 @@ namespace QuRest.Application.Services
             return svg;
         }
 
-        public async Task<string> DrawAsync(QuantumCircuit algorithm)
+        public async Task<string> DrawAsync(QuantumCircuit quantumCircuit)
         {
-            return await this.DrawAsync(await this.qxmlTranslator.TranslateToQasmAsync(algorithm));
+            return await this.DrawAsync(await this.qxmlTranslator.TranslateToQasmAsync(quantumCircuit));
         }
     }
 }

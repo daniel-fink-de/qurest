@@ -5,8 +5,8 @@ namespace QuRest.Application.Abstractions
 {
     public interface IQxmlTranslator
     {
-        public Task<string> TranslateToQasmAsync(QuantumCircuit algorithm);
-        public Task<string> TranslateToQiskitAsync(QuantumCircuit algorithm);
-        public Task<string> TranslateToPyQuilAsync(QuantumCircuit algorithm);
+        public Task<string> TranslateToQasmAsync(QuantumCircuit quantumCircuit);
+        public Task<string> TranslateToQiskitAsync(QuantumCircuit quantumCircuit);
+        public Task<string> TranslateToPyQuilAsync(QuantumCircuit quantumCircuit);
     }
 }
