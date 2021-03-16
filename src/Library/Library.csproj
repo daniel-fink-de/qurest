@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -14,10 +14,31 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>quantum-computing,rest-api,hybrid-quantum-classical-algorithms</PackageTags>
     <Authors>Daniel Fink</Authors>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
+    <Compile Include="..\Application\Abstractions\IQxmlCompiler.cs" Link="Application\Abstraction\IQxmlCompiler.cs" />
+    <Compile Include="..\Application\Abstractions\IQxmlTranslator.cs" Link="Application\Abstraction\IQxmlTranslator.cs" />
+    <Compile Include="..\Application\Examples\QuantumCircuitExamples.cs" Link="Application\Examples\QuantumCircuitExamples.cs" />
+    <Compile Include="..\Application\Interfaces\IQuantumProgrammingStudioService.cs" Link="Application\Interfaces\IQuantumProgrammingStudioService.cs" />
+    <Compile Include="..\Application\Services\QxmlCompiler.cs" Link="Application\Services\QxmlCompiler.cs" />
+    <Compile Include="..\Application\Services\QxmlTranslator.cs" Link="Application\Services\QxmlTranslator.cs" />
+    <Compile Include="..\Domain\IEntity.cs" Link="Domain\IEntity.cs" />
+    <Compile Include="..\Domain\QuantumCircuit.cs" Link="Domain\QuantumCircuit.cs" />
+    <Compile Include="..\Domain\qxml.cs" Link="Domain\qxml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Abstraction\" />
+    <Folder Include="Application\Interfaces\" />
+    <Folder Include="Domain\" />
+    <Folder Include="Application\Examples\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="CoreCLR-NCalc" Version="2.2.92" />
   </ItemGroup>
 
 </Project>

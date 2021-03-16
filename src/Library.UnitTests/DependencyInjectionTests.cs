@@ -1,7 +1,5 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using QuRest.Application.Abstractions;
-using QuRest.DependencyInjection;
 using QuRest.Domain;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,14 +20,8 @@ namespace QuRest.Library.UnitTests
                 .RX("0", "1.2")
                 .RX("1", "{theta}");
 
-            var compiler = serviceProvider.GetService<IQxmlCompiler>()
-                ?.AddParameterMapping("{N}", 4);
-
-            if (compiler is null)
-            {
-                compiler.Should().NotBeNull();
-                return;
-            }
+            var compiler = serviceProvider.GetRequiredService<IQuantumCircuitCompiler>()
+                .AddParameterMapping("{N}", 4);
 
             var compilation = await compiler
                 .AddParameterMapping("{theta}", 2.2)
@@ -54,6 +46,10 @@ namespace QuRest.Library.UnitTests
                 unitarian.Type == UnitarianType.RX &&
                 unitarian.Qubits == "1" &&
                 unitarian.Parameters == "2.2");
+
+            var translator = serviceProvider.GetRequiredService<IQuantumCircuitTranslator>();
+
+            var qasm = await translator.TranslateToQasmAsync(compilation);
         }
     }
 }

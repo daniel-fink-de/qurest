@@ -1,3 +1,4 @@
+Docker:
 In order to push a new local build image to docker hub, run the following:
 
 1) Create the image locally using VS
@@ -7,3 +8,12 @@ docker tag qurest username/qurest:latest
 
 3) Push the image to docker hub
 docker push username/qurest:latest
+
+NuGet:
+In order to push a new local package to NuGet, run the following:
+
+1) Pack commandin VS to create the .nupkg
+
+2) Push the package to NuGet
+
+dotnet nuget push qurest.1.X.X.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json
