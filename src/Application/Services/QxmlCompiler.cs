@@ -13,8 +13,8 @@ namespace QuRest.Application.Services
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     public class QxmlCompiler : IQxmlCompiler
     {
-        private QuantumCircuit compilation = new() { Name = "Empty" };
-        private QuantumCircuit circuitToCompile = new() { Name = "Empty" };
+        private QuantumCircuit compilation = new QuantumCircuit { Name = "Empty" };
+        private QuantumCircuit circuitToCompile = new QuantumCircuit { Name = "Empty" };
         private readonly IList<string> loopVariableNames = new List<string>();
 
         // current variable value, max value, index of starting the loop

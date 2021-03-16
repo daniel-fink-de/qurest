@@ -12,7 +12,7 @@ docker push username/qurest:latest
 NuGet:
 In order to push a new local package to NuGet, run the following:
 
-1) Pack commandin VS to create the .nupkg
+1) Pack command in VS to create the .nupkg
 
 2) Push the package to NuGet
 
