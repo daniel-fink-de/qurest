@@ -1,11 +1,11 @@
-# QuRest: A REST-full Approach for Hybrid Quantum-Classical Circuit Modeling
+# QuRest: A RESTful Approach for Hybrid Quantum-Classical Circuit Modeling
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![BuildAndTest](https://github.com/StuttgarterDotNet/qurest/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/StuttgarterDotNet/qurest/actions/workflows/dotnet.yml)
 ![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/stuttgarterdotnet/qurest)
 ![Nuget](https://img.shields.io/nuget/v/qurest)
 
 QuRest is an academical prototype with the intention to show how **classical control structures** like loops and conditionals can be implemented in a **gate-based quantum circuit model**. 
-This can be achieved by introducing so-called **model variables**, i.e. variables that needs to be mapped to real values at compile-time but can be used freely when modelling a quantum circuit.
+This can be achieved by introducing so-called **design variables**, i.e. variables that needs to be mapped to real values at compile-time but can be used freely when modelling a quantum circuit.
 
 
 The following example shows the preparation of a *GHZ-State* with *n* qubits using a for loop:
