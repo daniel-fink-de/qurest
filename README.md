@@ -7,6 +7,8 @@
 QuRest is an academical prototype with the intention to show how **classical control structures** like loops and conditionals can be implemented in a **gate-based quantum circuit model**. 
 This can be achieved by introducing so-called **design variables**, i.e. variables that needs to be mapped to real values at compile-time but can be used freely when modelling a quantum circuit.
 
+The full paper, which was part of a course assignment, can be found here [PDF](https://github.com/StuttgarterDotNet/qurest/blob/14acb09bd0a197b8c5a97a4835fb4ca49a836f1d/QuRest_Paper.pdf).
+
 
 The following example shows the preparation of a *GHZ-State* with *n* qubits using a for loop:
 
